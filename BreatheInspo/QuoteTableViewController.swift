@@ -66,7 +66,7 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
             cell.textLabel?.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
             cell.accessoryType = .none
         } else {
-            cell.textLabel?.text = "Get more quotes"
+            cell.textLabel?.text = "Get more quotes."
             cell.textLabel?.textColor = #colorLiteral(red: 0.6292289495, green: 0.4494991899, blue: 0.7234753966, alpha: 1)
             cell.accessoryType = .disclosureIndicator
         }
@@ -87,6 +87,9 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
     }
 
     @IBAction func restorePressed(_ sender: UIBarButtonItem) {
+        
+        SKPaymentQueue.default().restoreCompletedTransactions()
+        
     }
     
     func showPremiumQuotes() {
@@ -101,7 +104,7 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
         
         if SKPaymentQueue.canMakePayments() {
             
-            print("User can make payments")
+            print("User can make payments.")
             
             let paymentRequest = SKMutablePayment()
             paymentRequest.productIdentifier = productID
@@ -109,7 +112,7 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
             
         } else {
             
-            print("User cannot make payments")
+            print("User cannot make payments.")
             
         }
         
@@ -133,7 +136,7 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
             
             if transaction.transactionState == .purchased {
                 
-                print("Payment successful")
+                print("Payment successful.")
                 showPremiumQuotes()
                 UserDefaults.standard.set(true, forKey: productID)
                 SKPaymentQueue.default().finishTransaction(transaction)
@@ -144,6 +147,14 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
                     let errorDescription = error.localizedDescription
                     print("Payment unsuccessful due to : \(errorDescription)")
                 }
+                
+            } else if transaction.transactionState == .restored {
+                
+                showPremiumQuotes()
+                
+                print("Transaction restored.")
+                
+                SKPaymentQueue.default().finishTransaction(transaction)
                 
             }
         }
