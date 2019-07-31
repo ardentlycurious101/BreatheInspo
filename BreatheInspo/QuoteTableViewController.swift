@@ -33,20 +33,27 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
     ]
 
     override func viewDidLoad() {
+        
         super.viewDidLoad()
+        
         SKPaymentQueue.default().add(self)
+        
         if isPurchased() {
             showPremiumQuotes()
         }
+        
     }
 
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         if isPurchased() {
             return quotesToShow.count
         }
+        
         return quotesToShow.count + 1
+        
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -70,19 +77,23 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
     // MARK: - Table view delegate methods
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+       
         if indexPath.row == quotesToShow.count {
             buyPremiumQuotes()
         }
         
         tableView.deselectRow(at: indexPath, animated: true)
+        
     }
 
     @IBAction func restorePressed(_ sender: UIBarButtonItem) {
     }
     
     func showPremiumQuotes() {
+        
         quotesToShow.append(contentsOf: premiumQuotes)
         tableView.reloadData()
+        
     }
 
     
@@ -91,6 +102,7 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
         if SKPaymentQueue.canMakePayments() {
             
             print("User can make payments")
+            
             let paymentRequest = SKMutablePayment()
             paymentRequest.productIdentifier = productID
             SKPaymentQueue.default().add(paymentRequest)
@@ -104,6 +116,7 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
     }
     
     func isPurchased() -> Bool {
+        
         let purchaseStatus = UserDefaults.standard.bool(forKey: productID)
         
         if purchaseStatus {
@@ -111,11 +124,13 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
         } else {
             return false
         }
+        
     }
     
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         
         for transaction in transactions {
+            
             if transaction.transactionState == .purchased {
                 
                 print("Payment successful")
@@ -135,5 +150,4 @@ class QuoteTableViewController: UITableViewController, SKPaymentTransactionObser
         
     }
     
-
 }
